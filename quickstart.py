@@ -22,6 +22,13 @@ CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
 
+CALENDARS = {
+  "SPRUCE": 'nu1je77d8je49j11rjfbd3tnjg@group.calendar.google.com',
+  "BIRCH": 'humh3m6csgsc1en0893s9ibfdc@group.calendar.google.com',
+  "UNION": 'ruck03hfkh84jlb6l93fg0sob4@group.calendar.google.com'
+}
+
+
 def get_credentials():
     """Gets valid user credentials from storage.
 
@@ -61,10 +68,17 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
+    
+    # Here is SKLARD attempt
+    eventsResult = service.calendarList().list().execute()
+    print(eventsResult)
+    print(eventsResult.get('items', []))
+
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     eventsResult = service.events().list(
-        calendarId='primary', timeMin=now, maxResults=10, singleEvents=True,
+        calendarId=CALENDARS['UNION'],
+        timeMin=now, maxResults=10, singleEvents=True,
         orderBy='startTime').execute()
     events = eventsResult.get('items', [])
 

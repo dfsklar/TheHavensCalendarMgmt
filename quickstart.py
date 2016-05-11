@@ -70,23 +70,23 @@ def main():
 
     
     # Here is SKLARD attempt
-    eventsResult = service.calendarList().list().execute()
-    print(eventsResult)
-    print(eventsResult.get('items', []))
+    #eventsResult = service.calendarList().list().execute()
+    #print(eventsResult)
+    #print(eventsResult.get('items', []))
 
     now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
     print('Getting the upcoming 10 events')
     eventsResult = service.events().list(
-        calendarId=CALENDARS['UNION'],
-        timeMin=now, maxResults=10, singleEvents=True,
+        calendarId=CALENDARS['BIRCH'],
+        timeMin=now, maxResults=1000, singleEvents=True,
         orderBy='startTime').execute()
     events = eventsResult.get('items', [])
 
     if not events:
         print('No upcoming events found.')
     for event in events:
-        start = event['start'].get('dateTime', event['start'].get('date'))
-        print(start, event['summary'])
+      print('---------------')
+      print(event)
 
 
 if __name__ == '__main__':

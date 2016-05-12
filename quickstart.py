@@ -82,8 +82,23 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
   # So we first need to find out if this icalUID is already present in the haystack
   if len(filter(lambda x: needle in x['summary'], haystack)) == 0:
     # If we get here, we know that the candidate_import event is NOT yet present in the haystack
-    #service.insert(destination_goocal,
-    print("HELLO")
+    import_body = {
+      "summary": candidate_import['summary'] + "     " + needle,
+      "start": candidate_import['start'],
+      "end": candidate_import['end']
+      }
+
+    print("ABOUT TO IMPORT THIS:")
+    print(import_body)
+    print("INTO THIS CALENDAR:")
+    print(destination_goocal)
+
+    service.events().insert(calendarId=destination_goocal, body=import_body)
+
+    x = 0/0
+
+      
+                   
 
 
 

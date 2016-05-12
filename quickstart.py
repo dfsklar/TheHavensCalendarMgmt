@@ -2,6 +2,8 @@ from __future__ import print_function
 import httplib2
 import os
 
+import pickle
+
 from apiclient import discovery
 import oauth2client
 from oauth2client import client
@@ -58,36 +60,54 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-def main():
-    """Shows basic usage of the Google Calendar API.
 
-    Creates a Google Calendar API service object and outputs a list of the next
-    10 events on the user's calendar.
-    """
+
+def retrieve_events(service, calname):
+  now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+
+  eventsResult = service.events().list(
+    calendarId=CALENDARS[calname],
+    timeMin=now, maxResults=2000, singleEvents=True,
+    orderBy='startTime').execute()
+  events = eventsResult.get('items', [])
+  return events
+
+
+def import_event_if_new(service, candidate_import, haystack, destination_goocal):
+  icalUID = candidate_import['iCalUID']
+  needle = '<<<' + icalUID + '>>>'
+
+  # The haystack event list is set up so the icalUID is located in the event's summary in this form:
+  #   <<<theID>>>.
+  # So we first need to find out if this icalUID is already present in the haystack
+  if len(filter(lambda x: needle in x['summary'], haystack)) == 0:
+    # If we get here, we know that the candidate_import event is NOT yet present in the haystack
+    #service.insert(destination_goocal,
+    print("HELLO")
+
+
+
+
+def main():
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
-
     
-    # Here is SKLARD attempt
-    #eventsResult = service.calendarList().list().execute()
-    #print(eventsResult)
-    #print(eventsResult.get('items', []))
+    events = {}
 
-    now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
-    print('Getting the upcoming 10 events')
-    eventsResult = service.events().list(
-        calendarId=CALENDARS['BIRCH'],
-        timeMin=now, maxResults=1000, singleEvents=True,
-        orderBy='startTime').execute()
-    events = eventsResult.get('items', [])
+    if False:
+      events['BIRCH'] = retrieve_events(service,'BIRCH')
+      events['SPRUCE'] = retrieve_events(service,'SPRUCE')
+      events['UNION'] = retrieve_events(service, 'UNION')
+      pickle.dump(events, open("events.p", "wb"))
+    else:
+      events = pickle.load(open("events.p", "rb"))
 
-    if not events:
-        print('No upcoming events found.')
-    for event in events:
-      print('---------------')
-      print(event)
-
+    for candidate_import in events['BIRCH']:
+      import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
+    for candidate_import in events['SPRUCE']:
+      import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
+    
 
 if __name__ == '__main__':
     main()

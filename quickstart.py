@@ -93,14 +93,10 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
     print("INTO THIS CALENDAR:")
     print(destination_goocal)
 
-    service.events().insert(calendarId=destination_goocal, body=import_body)
+    the_result = service.events().insert(calendarId=destination_goocal, body=import_body).execute()
+    print(the_result)
 
-    x = 0/0
-
-      
                    
-
-
 
 
 def main():
@@ -110,7 +106,7 @@ def main():
     
     events = {}
 
-    if False:
+    if True:
       events['BIRCH'] = retrieve_events(service,'BIRCH')
       events['SPRUCE'] = retrieve_events(service,'SPRUCE')
       events['UNION'] = retrieve_events(service, 'UNION')

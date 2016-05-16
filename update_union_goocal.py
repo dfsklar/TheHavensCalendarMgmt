@@ -1,6 +1,7 @@
 from __future__ import print_function
 import httplib2
 import os
+import sys
 
 import pickle
 
@@ -29,6 +30,8 @@ CALENDARS = {
   "BIRCH": 'humh3m6csgsc1en0893s9ibfdc@group.calendar.google.com',
   "UNION": 'ruck03hfkh84jlb6l93fg0sob4@group.calendar.google.com'
 }
+
+CHANGE_COUNT = 0
 
 
 def get_credentials():
@@ -95,6 +98,7 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
 
     the_result = service.events().insert(calendarId=destination_goocal, body=import_body).execute()
     print(the_result)
+    CHANGE_COUNT += 1
 
                    
 
@@ -118,7 +122,11 @@ def main():
       import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
     for candidate_import in events['SPRUCE']:
       import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
-    
+
+    if CHANGE_COUNT > 0:
+        sys.exit(0)
+    else:
+        sys.exit(66)
 
 if __name__ == '__main__':
     main()

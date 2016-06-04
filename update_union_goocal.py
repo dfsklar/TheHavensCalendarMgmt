@@ -98,12 +98,14 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
 
     the_result = service.events().insert(calendarId=destination_goocal, body=import_body).execute()
     print(the_result)
+    global CHANGE_COUNT
     CHANGE_COUNT += 1
 
                    
 
 
 def main():
+    global CHANGE_COUNT
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
@@ -118,14 +120,19 @@ def main():
     else:
       events = pickle.load(open("events.p", "rb"))
 
+    print("Looking for new events in BIRCH cal...")
     for candidate_import in events['BIRCH']:
       import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
+    print("Looking for new events in SPRUCE cal...")
     for candidate_import in events['SPRUCE']:
       import_event_if_new(service, candidate_import, events['UNION'], CALENDARS['UNION'])
 
+    print("ENDGAME OF update_union_goocal...")
     if CHANGE_COUNT > 0:
+        print("  Will return 0")
         sys.exit(0)
     else:
+        print("  Will return 66")
         sys.exit(66)
 
 if __name__ == '__main__':

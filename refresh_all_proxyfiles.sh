@@ -1,5 +1,7 @@
 cd /root/TheHavensCalendarMgmt/
 
+find logs -mtime 20 -name '*.nohup.out' -print -exec /bin/rm {} \;
+
 DF=/var/www/BIRCHHAVEN/goocal_proxy/
 
 python update_union_goocal.py && \

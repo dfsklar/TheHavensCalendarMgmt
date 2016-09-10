@@ -13,6 +13,8 @@ sh cvt_flip_semantics.sh $DF/bh.ics $DF/bh_flipfmt.ics 404C && \
 echo "About to produce 'flip format' version for SH" && \
 sh cvt_flip_semantics.sh $DF/sh.ics $DF/sh_flipfmt.ics 402C
 
+STAT=$?
+
 if test $STAT -eq 0
 then
     echo "OK status - fresh pulls from GooCals all done"

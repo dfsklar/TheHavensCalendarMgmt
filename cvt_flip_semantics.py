@@ -19,7 +19,7 @@ for line in sys.stdin:
             print "%s:%s" % (field1, end_tomorrow.strftime("%Y%m%d"))
             continue
         elif field1 == "SUMMARY":
-            print "%s:%s %s-%s %s" % (field1, condo_unit, start_day, end_tomorrow_day, field2.rstrip())
+            print "%s:%s %s-%s %s" % (field1, condo_unit, start_day, end_today.day, field2.rstrip())
             continue
 
     print line.rstrip()

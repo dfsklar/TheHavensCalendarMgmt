@@ -12,6 +12,11 @@ for line in sys.stdin:
         (field1, field2) = line.split(':', 1)
         if field1 == 'DTSTART;VALUE=DATE':
             start_day = parse(field2).day
+        elif field1 == 'DTSTAMP':
+            dtstamp = field2
+        elif field1 == 'LAST-MODIFIED':
+            print "%s:%s" % (field1, dtstamp.rstrip())
+            continue
         elif field1 == "DTEND;VALUE=DATE":
             end_today = parse(field2)
             end_tomorrow = end_today + datetime.timedelta(days=1)

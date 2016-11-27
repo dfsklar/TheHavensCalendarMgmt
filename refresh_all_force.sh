@@ -9,9 +9,9 @@ sh refresh.sh bh https://calendar.google.com/calendar/ical/humh3m6csgsc1en0893s9
 echo "About to re-pull from UNION goocal" && \
 sh refresh.sh union https://calendar.google.com/calendar/ical/ruck03hfkh84jlb6l93fg0sob4%40group.calendar.google.com/private-35a3c6e9eaa7fbc02dc5e282db3d8e2e/basic.ics $DF && \
 echo "About to produce 'flip format' version for BH" && \
-sh cvt_flip_semantics.sh $DF/bh.ics $DF/bh_flipfmt.ics 404C && \
+sh cvt_flip_semantics.sh $DF/bh.ics $DF/bh_flipfmt_v2.ics 404C && \
 echo "About to produce 'flip format' version for SH" && \
-sh cvt_flip_semantics.sh $DF/sh.ics $DF/sh_flipfmt.ics 402C
+sh cvt_flip_semantics.sh $DF/sh.ics $DF/sh_flipfmt_v2.ics 402C
 
 STAT=$?
 

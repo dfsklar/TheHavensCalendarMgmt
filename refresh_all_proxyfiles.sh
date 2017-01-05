@@ -1,6 +1,6 @@
 cd /root/TheHavensCalendarMgmt/
 
-find logs -mtime 20 -name '*.nohup.out' -print -exec /bin/rm {} \;
+find logs \! -mtime 10 -print -exec /bin/rm {} \;
 
 DF=/var/www/BIRCHHAVEN/goocal_proxy/
 

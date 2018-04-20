@@ -1,4 +1,4 @@
-cd /root/TheHavensCalendarMgmt/
+cd /home/dfsklar/TheHavensCalendarMgmt/
 
 DF=/var/www/BIRCHHAVEN/goocal_proxy/
 

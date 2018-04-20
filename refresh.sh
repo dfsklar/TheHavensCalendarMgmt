@@ -34,8 +34,8 @@ fgrep --silent VEVENT /tmp/$1_test.ics && \
 fgrep --silent HAVEN /tmp/$1_test.ics && \
 fgrep --silent 'END:VCALENDAR' /tmp/$1_test.ics && \
 echo "DOING THE MOVE NOW" && \
-echo mv /tmp/$1_test.ics $DEST_FOLDER/$1.ics && \
-mv /tmp/$1_test.ics $DEST_FOLDER/$1.ics && \
+echo cp /tmp/$1_test.ics $DEST_FOLDER/$1.ics && \
+cp /tmp/$1_test.ics $DEST_FOLDER/$1.ics && \
 echo "Well the mv is done" && \
 exit 0
 

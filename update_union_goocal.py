@@ -5,7 +5,7 @@ import sys
 
 import pickle
 
-from apiclient import discovery
+from apiclient.discovery import build
 import oauth2client
 from oauth2client import client
 from oauth2client import tools
@@ -108,7 +108,7 @@ def main():
     global CHANGE_COUNT
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
+    service = build('calendar', 'v3', http=http)
     
     events = {}
 

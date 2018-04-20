@@ -20,3 +20,9 @@ easy_install  --upgrade google-api-python-client
 easy_install httplib2
 ```
 
+# Automating with cron
+```
+# THE HAVENS
+2,7,12,17,22,27,32,38,42,47,52,57 * * * * nohup /bin/bash /home/dfsklar/TheHavensCalendarMgmt/refresh_all_proxyfiles.sh > /home/dfsklar/TheHavensCalendarMgmt/logs/delta_$$.nohup.out 2>&1
+8,38 * * * *                              nohup /bin/bash /home/dfsklar/TheHavensCalendarMgmt/refresh_all_force.sh      > /home/dfsklar/TheHavensCalendarMgmt/logs/forceall_$$.nohup.out 2>&1
+```

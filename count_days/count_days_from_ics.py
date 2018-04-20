@@ -1,11 +1,16 @@
 import fileinput
 import sys
-from dateutils.parser import parse
+from dateutil.parser import parse
 import datetime
 
 total = 0
 
 for line in sys.stdin:
+    print line
+    if (line[0] == ' '):
+        continue
+    if (line.startswith("SUMMARY")):
+        continue
     (field1, field2) = line.split(':')
     if 'DTSTART' in field1:
       if '2015' in field2:

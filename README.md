@@ -1,9 +1,8 @@
 # TheHavensCalendarMgmt
 
-This could be of value in doing a copy-events scenario:
+# Why do we need this?
 
-http://stackoverflow.com/questions/21467888/copy-events-from-one-google-calendar-to-another-without-duplication
-
+VRBO stupidly does not allow importation of a google-hosted calendar, because "so often it has events like birthdays and to-do reminders".  INSANE!  It will let you display such calendars but it will not let events on those calendars actually block days from availability.  INSANE!!  So I have to mirror the google calendars on my own hosted site.
 
 # Prep of a linux box
 

@@ -1,6 +1,5 @@
 cd /home/dfsklar/TheHavensCalendarMgmt/
 
-# I suspect this kills even very young files?
 find logs  -mtime 10 -print -exec /bin/rm {} \;
 
 DF=/var/www/BIRCHHAVEN/goocal_proxy/

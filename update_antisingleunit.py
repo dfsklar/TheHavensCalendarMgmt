@@ -42,8 +42,6 @@ for line in sys.stdin:
             if not is_bothunit_booking and (last_booked_date > date.today()):
                 ranges.append(Range(startnight=start_day, lastnight=last_booked_date))
 
-print ranges
-
 curdate = datetime(2015,1,1)
 
 print """BEGIN:VCALENDAR
@@ -61,7 +59,7 @@ calentry = """BEGIN:VEVENT
 DTSTART;VALUE=DATE:%s
 DTEND;VALUE=DATE:%s
 DTSTAMP:20190201T103802Z
-UID:havensantisingleunit@google.com
+UID:havensantisingleunit_%s@google.com
 CREATED:20190201T103202Z
 DESCRIPTION:
 LAST-MODIFIED:20190201T103202Z
@@ -72,15 +70,20 @@ SUMMARY:AntiSingleUnit Blocker
 TRANSP:OPAQUE
 END:VEVENT"""
 
+def print_calentry(date1, date2):
+    print calentry % (date1, date2, date1)
+    
 
 # TODO:  SORTING!
+idx = 1
 for R in ranges:
     inverse = Range(startnight=curdate, lastnight=R.startnight - timedelta(days=1))
-    print calentry % (inverse.startnight.strftime("%Y%m%d"), inverse.lastnight.strftime("%Y%m%d"))
+    print_calentry(inverse.startnight.strftime("%Y%m%d"), inverse.lastnight.strftime("%Y%m%d"))
+    idx += 1
     curdate = R.lastnight + timedelta(days=1)
 
 
-print calentry % (curdate.strftime("%Y%m%d"), "2066-01-01")
+print_calentry(curdate.strftime("%Y%m%d"), "20660101")
 
 print "END:VCALENDAR"
     

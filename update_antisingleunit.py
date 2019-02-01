@@ -77,7 +77,7 @@ def print_calentry(date1, date2):
 # TODO:  SORTING!
 idx = 1
 for R in ranges:
-    inverse = Range(startnight=curdate, lastnight=R.startnight - timedelta(days=1))
+    inverse = Range(startnight=curdate, lastnight=R.startnight)
     print_calentry(inverse.startnight.strftime("%Y%m%d"), inverse.lastnight.strftime("%Y%m%d"))
     idx += 1
     curdate = R.lastnight + timedelta(days=1)

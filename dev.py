@@ -28,28 +28,32 @@ def is_weekend(arrowdate):
     # FRI and SAT are the weekends
     return int(x.format('d')) in [5, 6]
 
-for x in alldates:
+def printdebug(x):
     print '------'
     print x
     print x.format('ddd')
     print day_of_year(x)
     print is_weekend(x)
+
+
+def is_in_peak_period(arrowdate):
+    doy = day_of_year(arrowdate)
+    return (doy < 2) or (doy>=165 and doy<=257) or (doy>=350)
+
+
+# STEP 1: Block all dates as the default
+for x in alldates:
     THECAL[x] = 'blocked'
 
-
-
-def peak_period(thedate):
-    retval = False
-
-
-# latest_start = max(r1.start, r2.start)
-# earliest_end = min(r1.end, r2.end)
-# delta = (earliest_end - latest_start).days + 1
-# overlap = max(0, delta)
+# STEP 2: Unblock all non-peak weekdays
+for x in alldates:
+    if not is_weekend(x):
+        if not is_in_peak_period(x):
+            THECAL[x] = 'avail'
 
 
 # ON STDIN: The UNION calendar ics file
-
+# STEP 3: Unblock any days that are already booked to a single unit
 for line in sys.stdin:
     if line[0] != ' ':
         (field1, field2) = line.split(':', 1)
@@ -65,10 +69,23 @@ for line in sys.stdin:
             summary = field2
         elif field1 == "END" and ("VEVENT" in field2):
             if not is_bothunit_booking and (last_booked_date > today):
-                ranges.append(Range(startnight=start_day, lastnight=last_booked_date))
+                print "Processing " + line
+                while start_day <= last_booked_date:
+                    THECAL[start_day] = 'avail'
+                    start_day = start_day.shift(days=1)
 
-                
-curdate = datetime(2015,1,1)
+# STEP 4: Unblock any days that are "imminent"
+for x in arrow.Arrow.range('day', today, today.shift(weeks=2)):
+    THECAL[x] = 'avail'
+for x in arrow.Arrow.range('day', today.shift(weeks=2), today.shift(weeks=3)):
+    if not is_in_peak_period(x):
+        THECAL[x] = 'avail'
+
+# DEBUG                           
+for x in alldates:
+    print x
+    print THECAL[x]
+
 
 print """BEGIN:VCALENDAR
 PRODID:-//Google Inc//Google Calendar 70.9054//EN

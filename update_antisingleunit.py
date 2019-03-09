@@ -123,7 +123,7 @@ for x in alldates:
     if curblockstart:
         if THECAL[x] == 'avail':
             # We have found the end of a blocked range
-            print_calentry(curblockstart, x.shift(days=-1))
+            print_calentry(curblockstart, x.shift(days=0))
             curblockstart = None
     else:
         if THECAL[x] == 'blocked':

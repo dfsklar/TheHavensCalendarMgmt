@@ -59,19 +59,29 @@ for line in sys.stdin:
     if line[0] != ' ':
         (field1, field2) = line.split(':', 1)
         if field1 == 'DTSTART;VALUE=DATE':
-            start_day = arrow.get(field2)
+            start_day = arrow.get(field2,'YYYYMMDD')
+            print >> sys.stderr, field2
+            print >> sys.stderr, start_day
         elif field1 == 'DTSTAMP':
             dtstamp = field2
         elif field1 == "DTEND;VALUE=DATE":
-            checkout_date = arrow.get(field2)
+            checkout_date = arrow.get(field2,'YYYYMMDD')
             last_booked_date = checkout_date.shift(days=-1)
         elif field1 == "SUMMARY":
-            is_bothunit_booking = ('BOTH' in field2.strip())
             summary = field2
+            print >> sys.stderr, "Looking at summary: " + summary
+            is_bothunit_booking = ('BOTH' in field2.strip())
         elif field1 == "END" and ("VEVENT" in field2):
-            if not is_bothunit_booking and (last_booked_date > today):
-                print "Processing " + line
+            print >> sys.stderr, "Looking at END event: " + line
+            print >> sys.stderr, is_bothunit_booking
+            print >> sys.stderr, last_booked_date
+            print >> sys.stderr, today
+            if (not is_bothunit_booking) and (last_booked_date > today):
+                print >> sys.stderr, "Unblocking for a single-unit already booked: " + summary
+                print >> sys.stderr, start_day
+                print >> sys.stderr, last_booked_date
                 while start_day <= last_booked_date:
+                    print >> sys.stderr, "--- Unblocking this date: " + str(start_day)
                     THECAL[start_day] = 'avail'
                     start_day = start_day.shift(days=1)
 

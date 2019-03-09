@@ -2,6 +2,8 @@ cd /home/dfsklar/TheHavensCalendarMgmt/
 
 DF=/var/www/BIRCHHAVEN/goocal_proxy/
 
+echo "About to refresh the anti-singleunit emission" && \
+sh update_antisingleunit.sh && \
 echo "About to re-pull from SH goocal" && \
 sh refresh.sh sh https://calendar.google.com/calendar/ical/nu1je77d8je49j11rjfbd3tnjg%40group.calendar.google.com/private-a013b65e5ed16f0ca12971a9a6a2269c/basic.ics $DF && \
 echo "About to re-pull from BH goocal" && \

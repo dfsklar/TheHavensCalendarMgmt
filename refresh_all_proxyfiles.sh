@@ -10,7 +10,9 @@ sh refresh.sh sh https://calendar.google.com/calendar/ical/nu1je77d8je49j11rjfbd
 echo "About to re-pull from BH goocal" && \
 sh refresh.sh bh https://calendar.google.com/calendar/ical/humh3m6csgsc1en0893s9ibfdc%40group.calendar.google.com/private-fc7d6846b717bcf2c8a9d454de55aa7a/basic.ics $DF && \
 echo "About to re-pull from UNION goocal" && \
-sh refresh.sh union https://calendar.google.com/calendar/ical/ruck03hfkh84jlb6l93fg0sob4%40group.calendar.google.com/private-35a3c6e9eaa7fbc02dc5e282db3d8e2e/basic.ics $DF
+sh refresh.sh union https://calendar.google.com/calendar/ical/ruck03hfkh84jlb6l93fg0sob4%40group.calendar.google.com/private-35a3c6e9eaa7fbc02dc5e282db3d8e2e/basic.ics $DF && \
+echo "About to refresh the anti-singleunit emission" && \
+sh update_antisingleunit.sh
 
 STAT=$?
 if test $STAT -eq 66

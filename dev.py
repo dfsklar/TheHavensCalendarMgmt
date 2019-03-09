@@ -29,11 +29,12 @@ def is_weekend(arrowdate):
     return int(x.format('d')) in [5, 6]
 
 def printdebug(x):
-    print '------'
+    print '---------------------'
     print x
-    print x.format('ddd')
+    print x.format('dddd')
     print day_of_year(x)
-    print is_weekend(x)
+    print "WEEKEND" if is_weekend(x) else "weekday"
+    print THECAL[x]
 
 
 def is_in_peak_period(arrowdate):
@@ -81,10 +82,9 @@ for x in arrow.Arrow.range('day', today.shift(weeks=2), today.shift(weeks=3)):
     if not is_in_peak_period(x):
         THECAL[x] = 'avail'
 
-# DEBUG                           
-for x in alldates:
-    print x
-    print THECAL[x]
+# DEBUG EMISSION
+#for x in alldates:
+#    printdebug(x)
 
 
 print """BEGIN:VCALENDAR
@@ -114,19 +114,20 @@ TRANSP:OPAQUE
 END:VEVENT"""
 
 def print_calentry(date1, date2):
-    print calentry % (date1, date2, date1)
+    fmt = 'YYYYMMDD'
+    print calentry % (date1.format(fmt), date2.format(fmt), date1.format(fmt))
     
 
-# TODO:  SORTING!
-idx = 1
-for R in ranges:
-    inverse = Range(startnight=curdate, lastnight=R.startnight)
-    print_calentry(inverse.startnight.strftime("%Y%m%d"), inverse.lastnight.strftime("%Y%m%d"))
-    idx += 1
-    curdate = R.lastnight + timedelta(days=1)
-
-
-print_calentry(curdate.strftime("%Y%m%d"), "20660101")
-
+curblockstart = None
+for x in alldates:
+    if curblockstart:
+        if THECAL[x] == 'avail':
+            # We have found the end of a blocked range
+            print_calentry(curblockstart, x.shift(days=-1))
+            curblockstart = None
+    else:
+        if THECAL[x] == 'blocked':
+            curblockstart = x
+        
 print "END:VCALENDAR"
     

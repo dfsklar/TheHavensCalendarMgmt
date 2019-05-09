@@ -12,6 +12,9 @@ Range = namedtuple('Range', ['startnight', 'lastnight'])
 # r2 = Range(start=datetime(2012, 3, 20), end=datetime(2012, 9, 15))
 
 
+NUM_WEEKS_IMMINENT_min = 9
+NUM_WEEKS_IMMINENT_max = 10
+
 
 today = arrow.now().replace(hour=0, minute=0, second=0, microsecond=0)
 finaldate = today.shift(years=2)
@@ -86,9 +89,9 @@ for line in sys.stdin:
                     start_day = start_day.shift(days=1)
 
 # STEP 4: Unblock any days that are "imminent"
-for x in arrow.Arrow.range('day', today, today.shift(weeks=2)):
+for x in arrow.Arrow.range('day', today, today.shift(weeks=NUM_WEEKS_IMMINENT_min)):
     THECAL[x] = 'avail'
-for x in arrow.Arrow.range('day', today.shift(weeks=2), today.shift(weeks=3)):
+for x in arrow.Arrow.range('day', today.shift(weeks=NUM_WEEKS_IMMINENT_min), today.shift(weeks=NUM_WEEKS_IMMINENT_max)):
     if not is_in_peak_period(x):
         THECAL[x] = 'avail'
 

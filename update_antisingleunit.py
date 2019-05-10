@@ -12,8 +12,8 @@ Range = namedtuple('Range', ['startnight', 'lastnight'])
 # r2 = Range(start=datetime(2012, 3, 20), end=datetime(2012, 9, 15))
 
 
-NUM_WEEKS_IMMINENT_min = 9
-NUM_WEEKS_IMMINENT_max = 10
+NUM_WEEKS_IMMINENT_min = 16
+NUM_WEEKS_IMMINENT_max = 18
 
 
 today = arrow.now().replace(hour=0, minute=0, second=0, microsecond=0)

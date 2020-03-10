@@ -1,8 +1,10 @@
-cd /home/dfsklar/TheHavensCalendarMgmt/
+source /home/sklawlxv/virtualenv/var/www/BIRCHHAVEN/pythonapp/2.7/bin/activate 
+
+cd /home/sklawlxv/TheHavensCalendarMgmt/
 
 find logs  -mtime 10 -print -exec /bin/rm {} \;
 
-DF=/var/www/BIRCHHAVEN/goocal_proxy/
+DF=~/var/www/BIRCHHAVEN/goocal_proxy/
 
 python update_union_goocal.py && \
 echo "About to re-pull from SH goocal" && \

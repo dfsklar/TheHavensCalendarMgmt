@@ -1,5 +1,9 @@
 # TheHavensCalendarMgmt
 
+## Which python
+
+Seems like I wrote  these for python 2.  For the purpose of doing the google-accounts login for the "union" script, you can run that script on python 3 and it will do the login fine and then crash after the pickle file is emitted (which is all you need to facilitate login back on the robot machine anyway).
+
 # Feature one:  providing a proxy way to access our google calendars
 
 VRBO stupidly does not allow importation of a google-hosted calendar, because "so often it has events like birthdays and to-do reminders".  INSANE!  It will let you display such calendars but it will not let events on those calendars actually block days from availability.  INSANE!!  So I have to mirror the google calendars on my own hosted site.

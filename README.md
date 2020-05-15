@@ -1,8 +1,19 @@
 # TheHavensCalendarMgmt
 
-# Why do we need this?
+# Feature one:  providing a proxy way to access our google calendars
 
 VRBO stupidly does not allow importation of a google-hosted calendar, because "so often it has events like birthdays and to-do reminders".  INSANE!  It will let you display such calendars but it will not let events on those calendars actually block days from availability.  INSANE!!  So I have to mirror the google calendars on my own hosted site.
+
+
+# Feature two: the "unionizing" feature
+
+We have a separate google calendar for Birch and Spruce that we maintain manually.  The "union" python script is in charge of recognizing reservations on the B and S calendars, and automatically creating entries on the "UNION" ("All Havens") calendar since we cannot allow reserving the both-unit property when any one of the single-unit properties is reserved.
+
+This "union" python script writes to a google calendar so it must be authenticated with google accounts.
+
+It stays "logged-in" by preserving a pickle file with our authentication creds.  If ever that pickle file expires or is lost, you will need to rebuild by running that program on a windows/mac, so it can launch a browser and have you login.  After successful login, it will generate a pickle file that you can distribute to the machine that is robotically running that same script.
+
+
 
 
 # About the anti-single unit calendar

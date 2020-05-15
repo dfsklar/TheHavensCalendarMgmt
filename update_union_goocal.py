@@ -34,7 +34,7 @@ def init_service():
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
+            pickle.dump(creds, token, protocol=0)
 
     service = build('calendar', 'v3', credentials=creds)
     return service
@@ -108,7 +108,7 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
 
 def main(service):
     global CHANGE_COUNT
-    
+
     events = {}
 
     if True:
@@ -129,10 +129,10 @@ def main(service):
     print("ENDGAME OF update_union_goocal...")
     if CHANGE_COUNT > 0:
         print("  Will return 0")
-	sys.exit(0)
+        sys.exit(0)
     else:
         print("  Will return 66")
-	sys.exit(66)
+        sys.exit(66)
 
 main(service)
 

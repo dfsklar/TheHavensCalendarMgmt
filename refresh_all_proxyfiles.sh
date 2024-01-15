@@ -8,7 +8,7 @@ DF=~/var/www/BIRCHHAVEN/goocal_proxy/
 
 python update_union_goocal.py && \
 echo "About to re-pull from SH goocal" && \
-sh refresh.sh sh https://calendar.google.com/calendar/ical/nu1je77d8je49j11rjfbd3tnjg%40group.calendar.google.com/private-a013b65e5ed16f0ca12971a9a6a2269c/basic.ics $DF && \
+sh refresh.sh sh https://calendar.google.com/calendar/ical/nu1je77d8je49j11rjfbd3tnjg%40group.calendar.google.com/private-3c6036e3a5b614ee6a18f0adc62e9247/basic.ics $DF && \
 echo "About to re-pull from BH goocal" && \
 sh refresh.sh bh https://calendar.google.com/calendar/ical/humh3m6csgsc1en0893s9ibfdc%40group.calendar.google.com/private-fc7d6846b717bcf2c8a9d454de55aa7a/basic.ics $DF && \
 echo "About to re-pull from UNION goocal" && \

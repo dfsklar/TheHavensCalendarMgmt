@@ -59,9 +59,12 @@ LINES = list(sys.stdin)
 today = date.today()
 in_vevent = False
 current_dtstart = None
+current_dtend = None
 current_transp = None
 current_summary = None
 current_uid = None
+dtstart_date_only = None   # True = VALUE=DATE (yyyymmdd), False = has time
+dtend_date_only = None
 
 for line in LINES:
     if line[0] != ' ':
@@ -70,23 +73,45 @@ for line in LINES:
         if field1 == 'BEGIN' and field2.strip() == 'VEVENT':
             in_vevent = True
             current_dtstart = None
+            current_dtend = None
             current_transp = None
             current_summary = None
             current_uid = None
+            dtstart_date_only = None
+            dtend_date_only = None
         elif field1 == 'END' and field2.strip() == 'VEVENT':
-            if in_vevent and current_dtstart is not None and current_transp == 'TRANSPARENT':
+            if in_vevent and current_dtstart is not None:
                 start_date = dtstart_to_date(current_dtstart)
                 if start_date >= today:
                     summary = (current_summary or '').strip() or '(no SUMMARY)'
                     uid = (current_uid or '').strip() or '(no UID)'
-                    QA_PROBLEMS.append(
-                        "VEVENT with DTSTART on or after today has TRANSP=TRANSPARENT (should be OPAQUE): "
-                        "DTSTART=%s, SUMMARY=%s, UID=%s" % (current_dtstart, summary, uid)
-                    )
+                    if current_transp == 'TRANSPARENT':
+                        QA_PROBLEMS.append(
+                            "\nCalendar entry is not properly set to 'BUSY' status:\n"
+                            "DTSTART=%s, SUMMARY=%s, UID=%s" % (current_dtstart, summary, uid)
+                        )
+                    if not dtstart_date_only or not dtend_date_only:
+                        dtstart_val = str(current_dtstart) if current_dtstart is not None else "(not set)"
+                        dtend_val = str(current_dtend) if current_dtend is not None else "(not set)"
+                        QA_PROBLEMS.append(
+                            "\nCalendar entry is not properly set to FULL-DAY status:\n"
+                            "DTSTART=%s, DTEND=%s, SUMMARY=%s, UID=%s"
+                            % (dtstart_val, dtend_val, summary, uid)
+                        )
             in_vevent = False
         elif in_vevent:
-            if field1 == 'DTSTART;VALUE=DATE' or field1 == 'DTSTART':
+            if field1 == 'DTSTART;VALUE=DATE':
                 current_dtstart = parse(field2)
+                dtstart_date_only = True
+            elif field1 == 'DTSTART':
+                current_dtstart = parse(field2)
+                dtstart_date_only = False
+            elif field1 == 'DTEND;VALUE=DATE':
+                current_dtend = parse(field2)
+                dtend_date_only = True
+            elif field1 == 'DTEND':
+                current_dtend = parse(field2)
+                dtend_date_only = False
             elif field1 == 'TRANSP':
                 current_transp = field2.strip()
             elif field1 == 'SUMMARY':

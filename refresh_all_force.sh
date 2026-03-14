@@ -1,3 +1,5 @@
+cd "$(dirname "$0")"
+
 source env-prod
 
 mkdir -p logs
@@ -9,6 +11,7 @@ find logs -mtime +30  -print -exec rm {} \;
 # ON LINODE:
 DF=/var/www/html/goocal_proxy/
 
+python3 update_union_goocal.py > logs/update_union_goocal.$$.log 2>&1    && \
 echo "About to re-pull from SH goocal" && \
 sh refresh.sh sh https://calendar.google.com/calendar/ical/nu1je77d8je49j11rjfbd3tnjg%40group.calendar.google.com/private-3c6036e3a5b614ee6a18f0adc62e9247/basic.ics  $DF && \
 echo "About to re-pull from BH goocal" && \

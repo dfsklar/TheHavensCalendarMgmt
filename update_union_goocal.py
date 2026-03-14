@@ -10,6 +10,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 
 # If modifying these scopes, delete the file token.pickle.
+# The app name shown during OAuth (e.g. "Quickstart") is set in Google Cloud
+# Console → APIs & Services → OAuth consent screen → App name.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 
@@ -87,7 +89,7 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
   # The haystack event list is set up so the icalUID is located in the event's summary in this form:
   #   <<<theID>>>.
   # So we first need to find out if this icalUID is already present in the haystack
-  if len(filter(lambda x: needle in x['summary'], haystack)) == 0:
+  if not any(needle in x['summary'] for x in haystack):
     # If we get here, we know that the candidate_import event is NOT yet present in the haystack
     import_body = {
       "summary": candidate_import['summary'] + "     " + needle,
@@ -128,11 +130,11 @@ def main(service):
 
     print("ENDGAME OF update_union_goocal...")
     if CHANGE_COUNT > 0:
-        print("  Will return 0")
+        print("AT LEAST ONE CHANGE WAS FOUND!")
         sys.exit(0)
     else:
-        print("  Will return 66")
-        sys.exit(66)
+        print("NO CHANGES WERE FOUND!")
+        sys.exit(0)
 
 main(service)
 

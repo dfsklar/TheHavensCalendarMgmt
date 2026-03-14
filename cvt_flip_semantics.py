@@ -1,11 +1,14 @@
+import os
 import sys
-import datetime
+from datetime import datetime, timedelta, date
 
 # ARG 1:  The abbrev for the unit e.g. "404C"
 
 condo_unit = sys.argv[1]
 
-from datetime import datetime
+# QA: collect problems and send one email at the end
+QA_PROBLEMS = []
+
 
 def parse(date_string):
     # Try to handle both date and datetime strings in ICS, removing any trailing newlines/spaces
@@ -19,9 +22,78 @@ def parse(date_string):
     else:
         return datetime.strptime(date_string, "%Y%m%d")
 
-for line in sys.stdin:
+
+def dtstart_to_date(dt):
+    """Return date part for comparison with today."""
+    if isinstance(dt, datetime):
+        return dt.date()
+    return dt
+
+
+def send_qa_report_if_needed():
+    """Send a single email listing all QA problems, if any."""
+    if not QA_PROBLEMS:
+        return
+    try:
+        from send_email import send_email
+    except ImportError:
+        sys.stderr.write("QA: could not import send_email; skipping report.\n")
+        return
+    raw_to = os.environ.get("CALENDAR_QA_REPORT_TO") or os.environ.get("ACTION_MAILER_DEFAULT_TO")
+    if not raw_to:
+        sys.stderr.write("QA: no CALENDAR_QA_REPORT_TO or ACTION_MAILER_DEFAULT_TO; skipping report.\n")
+        return
+    # Comma-separated list of addresses (same as send_email --to)
+    to = [a.strip() for a in raw_to.split(",") if a.strip()]
+    subject = "Calendar QA: %s – %d problem(s)" % (condo_unit, len(QA_PROBLEMS))
+    body = "Unit: %s\n\n" % condo_unit + "\n".join(QA_PROBLEMS)
+    try:
+        send_email(to, subject, body)
+    except Exception as e:
+        sys.stderr.write("QA: failed to send report: %s\n" % e)
+
+
+# Buffered output so we can parse and transform in one pass
+LINES = list(sys.stdin)
+
+today = date.today()
+in_vevent = False
+current_dtstart = None
+current_transp = None
+current_summary = None
+current_uid = None
+
+for line in LINES:
     if line[0] != ' ':
         (field1, field2) = line.split(':', 1)
+        # --- VEVENT state for QA ---
+        if field1 == 'BEGIN' and field2.strip() == 'VEVENT':
+            in_vevent = True
+            current_dtstart = None
+            current_transp = None
+            current_summary = None
+            current_uid = None
+        elif field1 == 'END' and field2.strip() == 'VEVENT':
+            if in_vevent and current_dtstart is not None and current_transp == 'TRANSPARENT':
+                start_date = dtstart_to_date(current_dtstart)
+                if start_date >= today:
+                    summary = (current_summary or '').strip() or '(no SUMMARY)'
+                    uid = (current_uid or '').strip() or '(no UID)'
+                    QA_PROBLEMS.append(
+                        "VEVENT with DTSTART on or after today has TRANSP=TRANSPARENT (should be OPAQUE): "
+                        "DTSTART=%s, SUMMARY=%s, UID=%s" % (current_dtstart, summary, uid)
+                    )
+            in_vevent = False
+        elif in_vevent:
+            if field1 == 'DTSTART;VALUE=DATE' or field1 == 'DTSTART':
+                current_dtstart = parse(field2)
+            elif field1 == 'TRANSP':
+                current_transp = field2.strip()
+            elif field1 == 'SUMMARY':
+                current_summary = field2
+            elif field1 == 'UID':
+                current_uid = field2
+        # --- transform output ---
         if field1 == 'DTSTART;VALUE=DATE':
             start_day = parse(field2).day
         elif field1 == 'DTSTAMP':
@@ -31,7 +103,6 @@ for line in sys.stdin:
             continue
         elif field1 == "DTEND;VALUE=DATE":
             end_today = parse(field2)
-            from datetime import timedelta
             end_tomorrow = end_today + timedelta(days=1)
             end_tomorrow_day = end_tomorrow.day
             print("%s:%s" % (field1, end_tomorrow.strftime("%Y%m%d")))
@@ -41,3 +112,5 @@ for line in sys.stdin:
             continue
 
     print(line.rstrip())
+
+send_qa_report_if_needed()

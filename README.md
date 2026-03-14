@@ -18,6 +18,9 @@ This "union" python script writes to a google calendar so it must be authenticat
 It stays "logged-in" by preserving a pickle file with our authentication creds.  If ever that pickle file expires or is lost, you will need to rebuild by running that program on a windows/mac, so it can launch a browser and have you login.  After successful login, it will generate a pickle file that you can distribute to the machine that is robotically running that same script.
 
 
+## The URLs
+
+https://havenscal.sklardevelopment.com/goocal_proxy/union.ics
 
 
 ## About the anti-single unit calendar

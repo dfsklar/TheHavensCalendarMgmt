@@ -71,17 +71,36 @@ CALENDARS = {
 CHANGE_COUNT = 0
 
 
+
+
 def retrieve_events(service, calname):
+
+  # This will fetch only events in the future or very recent past (within the last 30 days).
+
+  import datetime
+
   now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
 
   eventsResult = service.events().list(
     calendarId=CALENDARS[calname],
-    timeMin=now, maxResults=2000, singleEvents=True,
+    timeMin=(datetime.datetime.utcnow() - datetime.timedelta(days=30)).isoformat() + 'Z', maxResults=2000, singleEvents=True,
     orderBy='startTime').execute()
   events = eventsResult.get('items', [])
+  print("Retrieved %d events" % len(events))
+  # INSERT_YOUR_CODE
+  for i, event in enumerate(events[:1]):
+      print(f"Event {i + 1}: {event}")
+
   return events
 
 
+
+
+
+
+# Prior to 2026MAR14, I was using this method to bring SH and BH events into the UNION calendar.
+# However, bringing in only new events caused the union cal to be unable to get *corrections* made to SH and BH events.
+# I keep this here for historical reference.
 def import_event_if_new(service, candidate_import, haystack, destination_goocal):
   icalUID = candidate_import['iCalUID']
   needle = '<<<' + icalUID + '>>>'
@@ -106,6 +125,12 @@ def import_event_if_new(service, candidate_import, haystack, destination_goocal)
     print(the_result)
     global CHANGE_COUNT
     CHANGE_COUNT += 1
+
+
+
+
+
+
 
 
 def main(service):
